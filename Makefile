@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
+#    By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/08 16:31:46 by jeberle           #+#    #+#              #
-#    Updated: 2024/05/08 17:02:47 by jeberle          ###   ########.fr        #
+#    Updated: 2024/05/11 05:18:43 by jonathanebe      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -107,7 +107,7 @@ $(LIBFT_LIB):
 	@$(MAKE) -C $(LIBFT_DIR)
 
 $(NAME): $(OBJECTS)
-	@$(CC) $(LIBFTFLAGS) -o $@ $^
+	@$(CC) -o $@ $^ $(LIBFTFLAGS)
 	@echo "$(GREEN)SUCCESS:$(X)\n$(SUCCESS)"
 
 clean:
