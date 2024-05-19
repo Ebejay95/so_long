@@ -6,11 +6,13 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:01 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/08 16:36:32 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/16 09:26:18 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/so_long.h"
+
+// MLX 42     free textures 
 
 int	main(void)
 {
