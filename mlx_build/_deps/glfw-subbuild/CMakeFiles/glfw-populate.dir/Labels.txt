@@ -1,0 +1,14 @@
+# Target labels
+ glfw-populate
+# Source files and their labels
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/CMakeFiles/glfw-populate
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/CMakeFiles/glfw-populate.rule
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/CMakeFiles/glfw-populate-complete.rule
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-build.rule
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-configure.rule
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-download.rule
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-install.rule
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-mkdir.rule
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-patch.rule
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-test.rule
+/Users/jonathaneberle/Projekte/42curriculum/so_long/mlx_build/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/glfw-populate-update.rule
