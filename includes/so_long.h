@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/19 19:59:35 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/20 11:39:04 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,13 @@
 # include <fcntl.h>
 # include "./../mlx42/include/MLX42/MLX42.h"
 # include "./../libft/libft.h"
+
+# ifndef BLOCK
+#  define BLOCK 50
+# endif
+# ifndef BG
+#  define BG 0xFFFFFF
+# endif
 
 typedef struct s_point
 {
