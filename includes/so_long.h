@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/20 11:39:04 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/26 19:23:10 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include "./../libft/libft.h"
 
 # ifndef BLOCK
-#  define BLOCK 50
+#  define BLOCK 100
 # endif
 # ifndef BG
 #  define BG 0xFFFFFF
@@ -30,6 +30,39 @@ typedef struct s_point
 	int	y;
 }	t_point;
 
+typedef struct s_images
+{
+	mlx_texture_t   *bbg_texture;
+	mlx_image_t     *bbg_image;
+	mlx_texture_t   *bg_texture;
+	mlx_image_t     *bg_image;
+	mlx_texture_t   *wall_texture;
+	mlx_image_t     *wall_image;
+	mlx_texture_t   *collctbl_texture;
+	mlx_image_t     *collctbl_image;
+	mlx_texture_t   *exit_texture;
+	mlx_image_t     *exit_image;
+	mlx_texture_t   *player_left_texture;
+	mlx_image_t     *player_left_image;
+	mlx_texture_t   *player_right_texture;
+	mlx_image_t     *player_right_image;
+	mlx_texture_t   *player_up_texture;
+	mlx_image_t     *player_up_image;
+	mlx_texture_t   *player_down_texture;
+	mlx_image_t     *player_down_image;
+}	t_images;
+
+typedef struct s_game
+{
+	mlx_t           *mlx;
+	char            *map;
+	char            **map_array;
+	t_point         size;
+	t_point         player_pos;
+	t_images        images;
+}	t_game;
+
+t_point	get_player_position(t_game *game);
 int		validate_player_exit(size_t *count, char *map);
 void	flood(char **tab, t_point size);
 int		validate_map_chars(char *map);

@@ -90,6 +90,7 @@ MLXFTFLAGS=-L$(MLXFT_BUILD_DIR) -lmlx42 -L$(GLFW_LIB_PATH) -I$(GLFW_INCLUDE_PATH
 SRCS= \
 so_long.c \
 map.c \
+player.c \
 validation.c \
 validation_input.c \
 validation_content.c
@@ -130,7 +131,7 @@ $(NAME): $(OBJECTS)
 
 clean:
 	@rm -rf $(OBJ_DIR)
-	@rm -rf $(MLXFT_BUILD_DIR) $(MLXFT_DIR)
+	@rm -rf $(MLXFT_BUILD_DIR)
 	@$(MAKE) -C $(LIBFT_DIR) clean
 	@echo "$(RED)objects deleted$(X)"
 
