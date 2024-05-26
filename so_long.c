@@ -6,12 +6,29 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:01 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/26 19:13:03 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/26 20:00:43 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/so_long.h"
 
+void *player_move_sound(void *arg) {
+	(void)arg;
+	if (fork() == 0) {
+		execlp("afplay", "afplay", "assets/player.mp3", (char *)NULL);
+		_exit(1);
+	}
+	return NULL;
+}
+
+void *background_music(void *arg) {
+	(void)arg;
+	if (fork() == 0) {
+		execlp("afplay", "afplay", "assets/background.mp3", (char *)NULL);
+		_exit(1);
+	}
+	return NULL;
+}
 
 void	initial_map_paint(t_game *game)
 {
@@ -52,6 +69,7 @@ void key_hook(mlx_key_data_t keydata, void *param)
 	int new_x = game->player_pos.x;
 	int new_y = game->player_pos.y;
 	char direction;
+	pthread_t sound_thread;
 
 	direction = 'l';
 	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) {
@@ -88,12 +106,15 @@ void key_hook(mlx_key_data_t keydata, void *param)
 				mlx_image_to_window(game->mlx, game->images.player_right_image, new_x * BLOCK, new_y * BLOCK);
 		}
 	}
+	pthread_create(&sound_thread, NULL, player_move_sound, NULL);
+	pthread_join(sound_thread, NULL);
 }
 
 int main(int argc, char **argv) {
 	t_game game;
 	int window_width;
 	int window_height;
+	pthread_t sound_thread;
 
 	if (validate_input(argc, argv) > 0)
 		return (EXIT_FAILURE);
@@ -105,7 +126,7 @@ int main(int argc, char **argv) {
 	}
 	game.size = get_mapsize(game.map);
 	game.player_pos = get_player_position(&game);
-	game.map_array = ft_split(game.map, '\n');  // Korrekte Verwendung von ft_split
+	game.map_array = ft_split(game.map, '\n');
 	window_width = game.size.x * BLOCK;
 	window_height = game.size.y * BLOCK;
 	game.mlx = mlx_init(window_width, window_height, "so_long", false);
@@ -234,6 +255,8 @@ int main(int argc, char **argv) {
 	initial_map_paint(&game);
 	mlx_key_hook(game.mlx, key_hook, &game);
 	mlx_loop(game.mlx);
+	pthread_create(&sound_thread, NULL, background_music, NULL);
+	pthread_join(sound_thread, NULL);
 	mlx_terminate(game.mlx);
 	free(game.map);
 	return (EXIT_SUCCESS);

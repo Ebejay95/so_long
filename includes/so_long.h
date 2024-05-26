@@ -6,13 +6,14 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/26 19:23:10 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/26 19:43:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SO_LONG_H
 # define SO_LONG_H
 
+# include <pthread.h>
 # include <fcntl.h>
 # include "./../mlx42/include/MLX42/MLX42.h"
 # include "./../libft/libft.h"
