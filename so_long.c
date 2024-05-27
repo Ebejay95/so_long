@@ -6,26 +6,91 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:01 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/26 20:00:43 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/27 22:22:48 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/so_long.h"
 
+char *ft_array_strchr(char **array, char c)
+{
+	int		length;
+	int		i;
+	char	*found;
+
+	if (array == NULL)
+		return (NULL);
+	i = 0;
+	found = NULL;
+	length = ft_array_length(array);
+	while (length > i && found == NULL)
+	{
+		found = ft_strchr(array[i], c);
+		i++;
+	}
+	return (found);
+}
+
 void *player_move_sound(void *arg) {
 	(void)arg;
 	if (fork() == 0) {
-		execlp("afplay", "afplay", "assets/player.mp3", (char *)NULL);
+		execlp("afplay", "afplay","-v", "0.6","assets/move.mp3", (char *)NULL);
+		_exit(1);
+	}
+	return NULL;
+}
+
+void *win_sound(void *arg) {
+	(void)arg;
+	if (fork() == 0) {
+		execlp("afplay", "afplay", "assets/win.mp3", (char *)NULL);
+		_exit(1);
+	}
+	return NULL;
+}
+
+void *loose_sound(void *arg) {
+	(void)arg;
+	if (fork() == 0) {
+		execlp("afplay", "afplay", "assets/loose.mp3", (char *)NULL);
+		_exit(1);
+	}
+	return NULL;
+}
+
+void *exit_sound(void *arg) {
+	(void)arg;
+	if (fork() == 0) {
+		execlp("afplay", "afplay", "assets/exit.mp3", (char *)NULL);
+		_exit(1);
+	}
+	return NULL;
+}
+
+void *collect_sound(void *arg) {
+	(void)arg;
+	if (fork() == 0) {
+		execlp("afplay", "afplay", "assets/collectable.mp3", (char *)NULL);
 		_exit(1);
 	}
 	return NULL;
 }
 
 void *background_music(void *arg) {
-	(void)arg;
+	t_music_data *music_data = (t_music_data *)arg;
+	while (music_data->run_music) {
+		if (fork() == 0) {
+			execlp("afplay", "afplay","-v", "0.5","assets/background.mp3", (char *)NULL);
+			_exit(1);
+		}
+		sleep(24);
+	}
+	return NULL;
+}
+
+void *start_music(void) {
 	if (fork() == 0) {
-		execlp("afplay", "afplay", "assets/background.mp3", (char *)NULL);
-		_exit(1);
+		execlp("afplay", "afplay", "assets/start.mp3", (char *)NULL);
 	}
 	return NULL;
 }
@@ -70,6 +135,10 @@ void key_hook(mlx_key_data_t keydata, void *param)
 	int new_y = game->player_pos.y;
 	char direction;
 	pthread_t sound_thread;
+	pthread_t exit_sound_thread;
+	pthread_t collect_sound_thread;
+	pthread_t win_sound_thread;
+	pthread_t loose_sound_thread;
 
 	direction = 'l';
 	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) {
@@ -92,10 +161,41 @@ void key_hook(mlx_key_data_t keydata, void *param)
 		}
 
 		if (game->map_array[new_y][new_x] != '1') {
-			mlx_image_to_window(game->mlx, game->images.bg_image, game->player_pos.x * BLOCK, game->player_pos.y * BLOCK);
 		
+			if (game->map_array[game->player_pos.y][game->player_pos.x] != 'E')
+			{
+				mlx_image_to_window(game->mlx, game->images.bg_image, game->player_pos.x * BLOCK, game->player_pos.y * BLOCK);
+			}
 			game->player_pos.x = new_x;
 			game->player_pos.y = new_y;
+
+			if (game->map_array[new_y][new_x] == 'E')
+			{
+				pthread_create(&exit_sound_thread, NULL, exit_sound, NULL);
+				pthread_join(exit_sound_thread, NULL);
+				game->music_data.run_music = false;
+				pthread_join(game->background_music_thread, NULL);
+				
+				mlx_terminate(game->mlx);
+				free(game->map);
+				if (!ft_array_strchr(game->map_array, 'C'))
+				{
+					pthread_create(&win_sound_thread, NULL, win_sound, NULL);
+					pthread_join(win_sound_thread, NULL);
+				}
+				else
+				{
+					pthread_create(&loose_sound_thread, NULL, loose_sound, NULL);
+					pthread_join(loose_sound_thread, NULL);
+				}
+			}
+
+			if (game->map_array[new_y][new_x] == 'C')
+			{
+				game->map_array[new_y][new_x] = '0';
+				pthread_create(&collect_sound_thread, NULL, collect_sound, NULL);
+				pthread_join(collect_sound_thread, NULL);
+			}
 			if (direction == 'u')
 				mlx_image_to_window(game->mlx, game->images.player_up_image, new_x * BLOCK, new_y * BLOCK);
 			else if (direction == 'd')
@@ -114,7 +214,6 @@ int main(int argc, char **argv) {
 	t_game game;
 	int window_width;
 	int window_height;
-	pthread_t sound_thread;
 
 	if (validate_input(argc, argv) > 0)
 		return (EXIT_FAILURE);
@@ -253,10 +352,18 @@ int main(int argc, char **argv) {
 	mlx_resize_image(game.images.player_down_image, BLOCK, BLOCK);
 	mlx_image_to_window(game.mlx, game.images.bbg_image, 0, 0);
 	initial_map_paint(&game);
+	start_music();
+	sleep(2);
+
+	game.music_data.run_music = true;
+	pthread_create(&game.background_music_thread, NULL, background_music, &game.music_data);
+
 	mlx_key_hook(game.mlx, key_hook, &game);
 	mlx_loop(game.mlx);
-	pthread_create(&sound_thread, NULL, background_music, NULL);
-	pthread_join(sound_thread, NULL);
+
+	game.music_data.run_music = false;
+	pthread_join(game.background_music_thread, NULL);
+
 	mlx_terminate(game.mlx);
 	free(game.map);
 	return (EXIT_SUCCESS);

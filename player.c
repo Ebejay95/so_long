@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 13:24:15 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/20 18:18:08 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/27 22:27:30 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_point	get_player_position(t_game *game)
 	position.y = 0;
 	position.x = 0;
 	index = 0;
-	while(game->map[index])
+	while (game->map[index])
 	{
 		if (game->map[index] == 'P')
 		{
