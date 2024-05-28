@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 19:07:23 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/19 19:45:45 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/28 22:30:26 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,8 @@ int	validate_map_rect(char *map)
 	char	**maplines;
 	size_t	linecount;
 
+	if (ft_strstr(map, "\n\n"))
+		return (ft_putstr_fd(2, "map is not a rect\n"), 1);
 	i = 0;
 	linelen = 0;
 	linecount = ft_count_words(map, '\n');
@@ -100,13 +102,15 @@ int	validate_map_walls(char *map)
 	while (i < linecount)
 	{
 		linelen = ft_strlen(maplines[i]);
-		if (linelen > 2)
+		if (maplines[i][0] != '1' || maplines[i][linelen - 1] != '1')
 		{
-			if (maplines[i][0] != '1' || maplines[i][linelen - 1] != '1')
-			{
-				ft_putstr_fd(2, "map is not a closed\n");
-				return (1);
-			}
+			ft_putstr_fd(2, "map is not a closed\n");
+			return (1);
+		}
+		if (i == 0 || i == linelen - 1)
+		{
+			if (check_top_bottom(maplines[i]) == 1)
+				return (ft_putstr_fd(2, "map is not a closed\n"), 1);
 		}
 		i++;
 	}

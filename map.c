@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 19:43:08 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/19 20:00:36 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/28 22:55:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,15 +65,17 @@ t_point	get_mapsize(char *map)
 	return (size);
 }
 
-int	validate_map(char *map)
+int	validate_map(t_game *game, char *map)
 {
-	if (validate_map_chars(map) > 0)
+	game->map = get_file_content(map);
+	game->map = ft_strtrim(game->map, "\n");
+	if (validate_map_chars(game->map) > 0)
 		return (1);
-	if (validate_map_rect(map) > 0)
+	if (validate_map_rect(game->map) > 0)
 		return (1);
-	if (validate_map_walls(map) > 0)
+	if (validate_map_walls(game->map) > 0)
 		return (1);
-	if (validate_map_content(map) > 0)
+	if (validate_map_content(game->map) > 0)
 		return (1);
 	return (0);
 }

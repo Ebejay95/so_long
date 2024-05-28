@@ -6,98 +6,18 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:01 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/27 22:22:48 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/29 00:20:39 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/so_long.h"
 
-char *ft_array_strchr(char **array, char c)
-{
-	int		length;
-	int		i;
-	char	*found;
-
-	if (array == NULL)
-		return (NULL);
-	i = 0;
-	found = NULL;
-	length = ft_array_length(array);
-	while (length > i && found == NULL)
-	{
-		found = ft_strchr(array[i], c);
-		i++;
-	}
-	return (found);
-}
-
-void *player_move_sound(void *arg) {
-	(void)arg;
-	if (fork() == 0) {
-		execlp("afplay", "afplay","-v", "0.6","assets/move.mp3", (char *)NULL);
-		_exit(1);
-	}
-	return NULL;
-}
-
-void *win_sound(void *arg) {
-	(void)arg;
-	if (fork() == 0) {
-		execlp("afplay", "afplay", "assets/win.mp3", (char *)NULL);
-		_exit(1);
-	}
-	return NULL;
-}
-
-void *loose_sound(void *arg) {
-	(void)arg;
-	if (fork() == 0) {
-		execlp("afplay", "afplay", "assets/loose.mp3", (char *)NULL);
-		_exit(1);
-	}
-	return NULL;
-}
-
-void *exit_sound(void *arg) {
-	(void)arg;
-	if (fork() == 0) {
-		execlp("afplay", "afplay", "assets/exit.mp3", (char *)NULL);
-		_exit(1);
-	}
-	return NULL;
-}
-
-void *collect_sound(void *arg) {
-	(void)arg;
-	if (fork() == 0) {
-		execlp("afplay", "afplay", "assets/collectable.mp3", (char *)NULL);
-		_exit(1);
-	}
-	return NULL;
-}
-
-void *background_music(void *arg) {
-	t_music_data *music_data = (t_music_data *)arg;
-	while (music_data->run_music) {
-		if (fork() == 0) {
-			execlp("afplay", "afplay","-v", "0.5","assets/background.mp3", (char *)NULL);
-			_exit(1);
-		}
-		sleep(24);
-	}
-	return NULL;
-}
-
-void *start_music(void) {
-	if (fork() == 0) {
-		execlp("afplay", "afplay", "assets/start.mp3", (char *)NULL);
-	}
-	return NULL;
-}
-
 void	initial_map_paint(t_game *game)
 {
-	int x, y, index;
+	int	x;
+	int	y;
+	int	index;
+
 	index = 0;
 	y = 0;
 	while (y < game->size.y)
@@ -107,19 +27,7 @@ void	initial_map_paint(t_game *game)
 		{
 			if (game->map[index] != '\n')
 			{
-				if (game->map[index] == '1') {
-					mlx_image_to_window(game->mlx, game->images.wall_image, x * BLOCK, y * BLOCK);
-				} else if (game->map[index] == '0') {
-					mlx_image_to_window(game->mlx, game->images.bg_image, x * BLOCK, y * BLOCK);
-				} else if (game->map[index] == 'C') {
-					mlx_image_to_window(game->mlx, game->images.collctbl_image, x * BLOCK, y * BLOCK);
-				} else if (game->map[index] == 'E') {
-					mlx_image_to_window(game->mlx, game->images.exit_image, x * BLOCK, y * BLOCK);
-				} else if (game->map[index] == 'P') {
-					mlx_image_to_window(game->mlx, game->images.player_left_image, x * BLOCK, y * BLOCK);
-					game->player_pos.x = x;
-					game->player_pos.y = y;
-				}
+				print_texture(game, index, x, y);
 				x++;
 			}
 			index++;
@@ -128,243 +36,117 @@ void	initial_map_paint(t_game *game)
 	}
 }
 
-void key_hook(mlx_key_data_t keydata, void *param)
+int	initialize(t_game *game, int argc, char **argv)
 {
-	t_game *game = (t_game *)param;
-	int new_x = game->player_pos.x;
-	int new_y = game->player_pos.y;
-	char direction;
-	pthread_t sound_thread;
-	pthread_t exit_sound_thread;
-	pthread_t collect_sound_thread;
-	pthread_t win_sound_thread;
-	pthread_t loose_sound_thread;
+	if (validate_input(argc, argv) > 0)
+		return (EXIT_FAILURE);
+	if (validate_map(game, argv[1]) > 0)
+		return (free(game->map), EXIT_FAILURE);
+	game->count = 0;
+	game->size = get_mapsize(game->map);
+	game->player_pos = get_player_position(game);
+	game->map_array = ft_split(game->map, '\n');
+	game->winwidth = game->size.x * BLOCK;
+	game->winheight = game->size.y * BLOCK;
+	game->mlx = mlx_init(game->winwidth, game->winheight, "so_long", false);
+	if (!game->mlx)
+		return (ft_putstr_fd(2, (char *)mlx_strerror(mlx_errno)), EXIT_FAILURE);
+	if (load_textures(game) > 0)
+		return (free(game->map), EXIT_FAILURE);
+	initial_map_paint(game);
+	start_music();
+	sleep(2);
+	game->music.run_music = true;
+	return (0);
+}
 
+void	key_hook(mlx_key_data_t keydata, void *param)
+{
+	int				new_x;
+	int				new_y;
+	char			direction;
+	t_game			*game;
+
+	game = (t_game *)param;
+	new_x = game->player_pos.x;
+	new_y = game->player_pos.y;
 	direction = 'l';
 	if (keydata.action == MLX_PRESS || keydata.action == MLX_REPEAT) {
+		mlx_delete_image(game->mlx, game->score);
 		if (keydata.key == MLX_KEY_UP) {
 			direction = 'u';
-			ft_printf("hoch\n");
+			game->count++;
 			new_y--;
 		} else if (keydata.key == MLX_KEY_DOWN) {
 			direction = 'd';
-			ft_printf("runter\n");
+			game->count++;
 			new_y++;
 		} else if (keydata.key == MLX_KEY_LEFT) {
 			direction = 'l';
-			ft_printf("links\n");
+			game->count++;
 			new_x--;
 		} else if (keydata.key == MLX_KEY_RIGHT) {
 			direction = 'r';
-			ft_printf("rechts\n");
+			game->count++;
 			new_x++;
 		}
+		game->score = mlx_put_string(game->mlx, ft_itoa(game->count), BLOCK / 6, BLOCK / 6);
 
 		if (game->map_array[new_y][new_x] != '1') {
 		
 			if (game->map_array[game->player_pos.y][game->player_pos.x] != 'E')
 			{
-				mlx_image_to_window(game->mlx, game->images.bg_image, game->player_pos.x * BLOCK, game->player_pos.y * BLOCK);
+				mlx_image_to_window(game->mlx, game->img.bg_i, game->player_pos.x * BLOCK, game->player_pos.y * BLOCK);
 			}
 			game->player_pos.x = new_x;
 			game->player_pos.y = new_y;
 
 			if (game->map_array[new_y][new_x] == 'E')
 			{
-				pthread_create(&exit_sound_thread, NULL, exit_sound, NULL);
-				pthread_join(exit_sound_thread, NULL);
-				game->music_data.run_music = false;
-				pthread_join(game->background_music_thread, NULL);
+				play_sound(game->exit_sound_thread, exit_sound);
+				game->music.run_music = false;
+				pthread_join(game->bg_music_thrt, NULL);
 				
 				mlx_terminate(game->mlx);
 				free(game->map);
 				if (!ft_array_strchr(game->map_array, 'C'))
-				{
-					pthread_create(&win_sound_thread, NULL, win_sound, NULL);
-					pthread_join(win_sound_thread, NULL);
-				}
+					play_sound(game->win_sound_thread, win_sound);
 				else
-				{
-					pthread_create(&loose_sound_thread, NULL, loose_sound, NULL);
-					pthread_join(loose_sound_thread, NULL);
-				}
+					play_sound(game->loose_sound_thread, loose_sound);
 			}
 
 			if (game->map_array[new_y][new_x] == 'C')
 			{
 				game->map_array[new_y][new_x] = '0';
-				pthread_create(&collect_sound_thread, NULL, collect_sound, NULL);
-				pthread_join(collect_sound_thread, NULL);
+					play_sound(game->collect_sound_thread, collect_sound);
 			}
 			if (direction == 'u')
-				mlx_image_to_window(game->mlx, game->images.player_up_image, new_x * BLOCK, new_y * BLOCK);
+				mlx_image_to_window(game->mlx, game->img.plyr_u_i, new_x * BLOCK, new_y * BLOCK);
 			else if (direction == 'd')
-				mlx_image_to_window(game->mlx, game->images.player_down_image, new_x * BLOCK, new_y * BLOCK);
+				mlx_image_to_window(game->mlx, game->img.plyr_d_i, new_x * BLOCK, new_y * BLOCK);
 			else if (direction == 'l')
-				mlx_image_to_window(game->mlx, game->images.player_left_image, new_x * BLOCK, new_y * BLOCK);
+				mlx_image_to_window(game->mlx, game->img.plyr_l_i, new_x * BLOCK, new_y * BLOCK);
 			else if (direction == 'r')
-				mlx_image_to_window(game->mlx, game->images.player_right_image, new_x * BLOCK, new_y * BLOCK);
+				mlx_image_to_window(game->mlx, game->img.plyr_r_i, new_x * BLOCK, new_y * BLOCK);
 		}
 	}
-	pthread_create(&sound_thread, NULL, player_move_sound, NULL);
-	pthread_join(sound_thread, NULL);
+	play_sound(game->sound_thread, player_move_sound);
 }
 
-int main(int argc, char **argv) {
-	t_game game;
-	int window_width;
-	int window_height;
+int	main(int argc, char **argv)
+{
+	t_game	game;
+	int		exit_code;
 
-	if (validate_input(argc, argv) > 0)
-		return (EXIT_FAILURE);
-	game.map = get_file_content(argv[1]);
-	game.map = ft_strtrim(game.map, "\n");
-	if (validate_map(game.map) > 0) {
-		free(game.map);
-		return (EXIT_FAILURE);
-	}
-	game.size = get_mapsize(game.map);
-	game.player_pos = get_player_position(&game);
-	game.map_array = ft_split(game.map, '\n');
-	window_width = game.size.x * BLOCK;
-	window_height = game.size.y * BLOCK;
-	game.mlx = mlx_init(window_width, window_height, "so_long", false);
-	if (!game.mlx) {
-		ft_putstr_fd(2, (char *)mlx_strerror(mlx_errno));
-		return (EXIT_FAILURE);
-	}
-	game.images.bg_texture = mlx_load_png("assets/background.png");
-	if (!game.images.bg_texture) {
-		ft_putstr_fd(2, "Error loading background.png\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.bg_image = mlx_texture_to_image(game.mlx, game.images.bg_texture);
-	if (!game.images.bg_image) {
-		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.bbg_texture = mlx_load_png("assets/background.png");
-	if (!game.images.bbg_texture) {
-		ft_putstr_fd(2, "Error loading background.png\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.bbg_image = mlx_texture_to_image(game.mlx, game.images.bbg_texture);
-	if (!game.images.bbg_image) {
-		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.wall_texture = mlx_load_png("assets/wall.png");
-	if (!game.images.wall_texture) {
-		ft_putstr_fd(2, "Error loading wall.png\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.wall_image = mlx_texture_to_image(game.mlx, game.images.wall_texture);
-	if (!game.images.wall_image) {
-		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.collctbl_texture = mlx_load_png("assets/collectable.png");
-	if (!game.images.collctbl_texture) {
-		ft_putstr_fd(2, "Error loading collectable.png\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.collctbl_image = mlx_texture_to_image(game.mlx, game.images.collctbl_texture);
-	if (!game.images.collctbl_image) {
-		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.exit_texture = mlx_load_png("assets/exit.png");
-	if (!game.images.exit_texture) {
-		ft_putstr_fd(2, "Error loading exit.png\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.exit_image = mlx_texture_to_image(game.mlx, game.images.exit_texture);
-	if (!game.images.exit_image) {
-		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.player_left_texture = mlx_load_png("assets/player_left.png");
-	if (!game.images.player_left_texture) {
-		ft_putstr_fd(2, "Error loading player.png\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.player_left_image = mlx_texture_to_image(game.mlx, game.images.player_left_texture);
-	if (!game.images.player_left_image) {
-		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.player_right_texture = mlx_load_png("assets/player_right.png");
-	if (!game.images.player_right_texture) {
-		ft_putstr_fd(2, "Error loading player.png\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.player_right_image = mlx_texture_to_image(game.mlx, game.images.player_right_texture);
-	if (!game.images.player_right_image) {
-		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.player_up_texture = mlx_load_png("assets/player_up.png");
-	if (!game.images.player_up_texture) {
-		ft_putstr_fd(2, "Error loading player.png\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.player_up_image = mlx_texture_to_image(game.mlx, game.images.player_up_texture);
-	if (!game.images.player_up_image) {
-		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.player_down_texture = mlx_load_png("assets/player_down.png");
-	if (!game.images.player_down_texture) {
-		ft_putstr_fd(2, "Error loading player.png\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	game.images.player_down_image = mlx_texture_to_image(game.mlx, game.images.player_down_texture);
-	if (!game.images.player_down_image) {
-		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game.mlx);
-		return (EXIT_FAILURE);
-	}
-	mlx_resize_image(game.images.bbg_image, window_width, window_height);
-	mlx_resize_image(game.images.bg_image, BLOCK, BLOCK);
-	mlx_resize_image(game.images.wall_image, BLOCK, BLOCK);
-	mlx_resize_image(game.images.collctbl_image, BLOCK, BLOCK);
-	mlx_resize_image(game.images.exit_image, BLOCK, BLOCK);
-	mlx_resize_image(game.images.player_left_image, BLOCK, BLOCK);
-	mlx_resize_image(game.images.player_right_image, BLOCK, BLOCK);
-	mlx_resize_image(game.images.player_up_image, BLOCK, BLOCK);
-	mlx_resize_image(game.images.player_down_image, BLOCK, BLOCK);
-	mlx_image_to_window(game.mlx, game.images.bbg_image, 0, 0);
-	initial_map_paint(&game);
-	start_music();
-	sleep(2);
-
-	game.music_data.run_music = true;
-	pthread_create(&game.background_music_thread, NULL, background_music, &game.music_data);
-
+	exit_code = initialize(&game, argc, argv);
+	if (exit_code > 0)
+		return (exit_code);
+	pthread_create(&game.bg_music_thrt, NULL, bg_music, &game.music);
 	mlx_key_hook(game.mlx, key_hook, &game);
 	mlx_loop(game.mlx);
-
-	game.music_data.run_music = false;
-	pthread_join(game.background_music_thread, NULL);
-
+	game.music.run_music = false;
+	pthread_join(game.bg_music_thrt, NULL);
 	mlx_terminate(game.mlx);
 	free(game.map);
-	return (EXIT_SUCCESS);
+	return (exit_code);
 }

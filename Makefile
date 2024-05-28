@@ -91,6 +91,12 @@ SRCS= \
 so_long.c \
 map.c \
 player.c \
+sound.c \
+sound2.c \
+texture_items.c \
+texture_map.c \
+texture_player.c \
+texture.c \
 validation.c \
 validation_input.c \
 validation_content.c
@@ -120,7 +126,8 @@ $(LIBFT_LIB):
 	@$(MAKE) -C $(LIBFT_DIR)
 
 $(MLXFT_LIB):
-	@git submodule update --init --recursive --remote > /dev/null 2>&1
+	@rm -rf mlx42
+	@git clone https://github.com/codam-coding-college/MLX42.git mlx42
 	@mkdir -p $(MLXFT_BUILD_DIR)
 	@cd $(MLXFT_DIR) && cmake $(MLXFT_BUILD_FLAGS) ../$(MLXFT_BUILD_DIR) && cd .. && cd $(MLXFT_BUILD_DIR) && $(MAKE)
 	@echo "$(GREEN)MLX42 built successfully$(X)"
@@ -130,6 +137,7 @@ $(NAME): $(OBJECTS)
 	@echo "$(SUCCESS)"
 
 clean:
+	@rm -rf mlx42
 	@rm -rf $(OBJ_DIR)
 	@rm -rf $(MLXFT_BUILD_DIR)
 	@$(MAKE) -C $(LIBFT_DIR) clean

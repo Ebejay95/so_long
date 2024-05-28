@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 19:09:12 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/19 19:46:00 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/28 22:30:45 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,5 +88,23 @@ int	validate_map_content(char *map)
 		}
 		lines--;
 	}
+	return (0);
+}
+
+int	check_top_bottom(char *line)
+{
+	size_t	linelen;
+	size_t	refcount;
+
+	linelen = ft_strlen(line);
+	refcount = 0;
+	while (*line != '\0')
+	{
+		if (*line == '1')
+			refcount++;
+		line++;
+	}
+	if (linelen != refcount)
+		return (1);
 	return (0);
 }
