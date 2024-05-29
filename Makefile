@@ -89,6 +89,7 @@ MLXFTFLAGS=-L$(MLXFT_BUILD_DIR) -lmlx42 -L$(GLFW_LIB_PATH) -I$(GLFW_INCLUDE_PATH
 
 SRCS= \
 so_long.c \
+actions.c \
 map.c \
 player.c \
 sound.c \
