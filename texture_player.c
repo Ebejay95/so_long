@@ -6,25 +6,54 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 23:03:32 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/29 17:18:47 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/29 19:23:50 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/so_long.h"
 
+
 int	load_texture_player_left(t_game *game)
 {
-	game->img.plyr_l_t = mlx_load_png("assets/player_left.png");
-	if (!game->img.plyr_l_t)
+	game->img.plyr_l_t1 = mlx_load_png("assets/player_left.png");
+	if (!game->img.plyr_l_t1)
 	{
-		ft_putstr_fd(2, "Error loading player.png\n");
+		ft_putstr_fd(2, "Error loading player_left.png\n");
 		mlx_close_window(game->mlx);
 		return (EXIT_FAILURE);
 	}
-	game->img.plyr_l_i = mlx_texture_to_image(game->mlx, game->img.plyr_l_t);
-	if (!game->img.plyr_l_i)
+	game->img.plyr_l_i1 = mlx_texture_to_image(game->mlx, game->img.plyr_l_t1);
+	if (!game->img.plyr_l_i1)
 	{
-		ft_putstr_fd(2, "Error creating image from texture\n");
+		ft_putstr_fd(2, "Error creating image from player_left.png texture\n");
+		mlx_close_window(game->mlx);
+		return (EXIT_FAILURE);
+	}
+	game->img.plyr_l_t2 = mlx_load_png("assets/player_left_animated.png");
+	if (!game->img.plyr_l_t2)
+	{
+		ft_putstr_fd(2, "Error loading player_left_animated.png\n");
+		mlx_close_window(game->mlx);
+		return (EXIT_FAILURE);
+	}
+	game->img.plyr_l_i2 = mlx_texture_to_image(game->mlx, game->img.plyr_l_t2);
+	if (!game->img.plyr_l_i2)
+	{
+		ft_putstr_fd(2, "Error creating image from player_left_animated.png texture\n");
+		mlx_close_window(game->mlx);
+		return (EXIT_FAILURE);
+	}
+	game->img.plyr_l_t3 = mlx_load_png("assets/player_left_animated.png");
+	if (!game->img.plyr_l_t3)
+	{
+		ft_putstr_fd(2, "Error loading player_left_animated.png\n");
+		mlx_close_window(game->mlx);
+		return (EXIT_FAILURE);
+	}
+	game->img.plyr_l_i3 = mlx_texture_to_image(game->mlx, game->img.plyr_l_t3);
+	if (!game->img.plyr_l_i3)
+	{
+		ft_putstr_fd(2, "Error creating image from player_left_animated.png texture\n");
 		mlx_close_window(game->mlx);
 		return (EXIT_FAILURE);
 	}
@@ -101,7 +130,9 @@ int	load_textures_player(t_game *game)
 		return (exit_code);
 	else
 	{
-		mlx_resize_image(game->img.plyr_l_i, BLOCK, BLOCK);
+		mlx_resize_image(game->img.plyr_l_i1, BLOCK, BLOCK);
+		mlx_resize_image(game->img.plyr_l_i2, BLOCK, BLOCK);
+		mlx_resize_image(game->img.plyr_l_i3, BLOCK, BLOCK);
 		mlx_resize_image(game->img.plyr_r_i, BLOCK, BLOCK);
 		mlx_resize_image(game->img.plyr_u_i, BLOCK, BLOCK);
 		mlx_resize_image(game->img.plyr_d_i, BLOCK, BLOCK);

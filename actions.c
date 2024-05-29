@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 10:28:59 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/29 15:38:22 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/29 18:05:46 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 {
 	t_game	*g;
 	char	moved_to;
-
+	ft_printf("key_hook\n");
 	g = (t_game *)param;
 	if (g->state == 1)
 		win_exit(g);

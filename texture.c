@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 23:11:27 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/29 00:20:09 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/29 17:32:15 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	print_texture(t_game *g, int index, int x, int y)
 		mlx_image_to_window(g->mlx, g->img.exit_i, x * BLOCK, y * BLOCK);
 	else if (g->map[index] == 'P')
 	{
-		mlx_image_to_window(g->mlx, g->img.plyr_l_i, x * BLOCK, y * BLOCK);
+		mlx_image_to_window(g->mlx, g->img.plyr_l_i1, x * BLOCK, y * BLOCK);
 		g->player_pos.x = x;
 		g->player_pos.y = y;
 	}

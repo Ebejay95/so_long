@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/29 17:08:06 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/05/29 19:47:01 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,12 @@ typedef struct s_img
 	mlx_image_t		*cllctbl_i;
 	mlx_texture_t	*exit_t;
 	mlx_image_t		*exit_i;
-	mlx_texture_t	*plyr_l_t;
-	mlx_image_t		*plyr_l_i;
+	mlx_texture_t	*plyr_l_t1;
+	mlx_image_t		*plyr_l_i1;
+	mlx_texture_t	*plyr_l_t2;
+	mlx_image_t		*plyr_l_i2;
+	mlx_texture_t	*plyr_l_t3;
+	mlx_image_t		*plyr_l_i3;
 	mlx_texture_t	*plyr_r_t;
 	mlx_image_t		*plyr_r_i;
 	mlx_texture_t	*plyr_u_t;
@@ -77,7 +81,10 @@ typedef struct s_game
 	int				new_x;
 	int				new_y;
 	char			direction;
+	mlx_image_t		*player_l_animation[3];
 	t_music			music;
+	int				frame_count_buffer;
+	int				frame_count;
 	pthread_t		bg_music_thrt;
 	pthread_t		sound_thread;
 	pthread_t		exit_sound_thread;
@@ -114,6 +121,8 @@ void	win_exit(t_game *game);
 void	loose_exit(t_game *game);
 char	move_player(t_game *g, mlx_key_data_t keydata);
 
+void	initialize_player_animation(t_game *game);
+void	render_move(t_game *g, int frame);
 void	play_sound(pthread_t thread, void *(*play)(void *));
 void	*player_move_sound(void *arg);
 void	*win_sound(void *arg);
