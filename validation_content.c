@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 19:09:12 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/28 22:30:45 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/05 15:23:42 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	check_xy_nexts(char **tab, int ydex, int xdex, t_point size)
 	char	*ref;
 
 	check = 0;
-	ref = ft_strdup("0CE");
+	ref = ft_strdup("0MCE");
 	if (ydex != 0)
 		flood_one(ref, &check, &tab[ydex - 1][xdex]);
 	if (xdex != 0)

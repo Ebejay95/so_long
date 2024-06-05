@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 10:28:59 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/29 15:38:22 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/05 15:40:29 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void	move_processing(t_game *g)
 	x = g->player_pos.x;
 	y = g->player_pos.y;
 	play_sound(g->sound_thread, player_move_sound);
+	if (g->map_array[g->new_y][g->new_x] == 'M')
+		loose_exit(g);
 	if (g->map_array[g->new_y][g->new_x] == 'C')
 		play_sound(g->collect_sound_thread, collect_sound);
 	if (g->map_array[y][x] != 'E')

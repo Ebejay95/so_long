@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:01 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/29 17:07:40 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/05 20:36:40 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,12 @@ int	initialize(t_game *game, int argc, char **argv)
 	if (validate_map(game, argv[1]) > 0)
 		return (free(game->map), EXIT_FAILURE);
 	game->c = 0;
+	game->isinited = 0;
 	game->state = 0;
+	game->active_frame = 0;
+	game->monster_move_count = 0;
+	game->frame_count = 0;
+	game->direction = 'l';
 	game->size = get_mapsize(game->map);
 	game->player_pos = get_player_position(game);
 	game->map_array = ft_split(game->map, '\n');
@@ -93,7 +98,76 @@ int	initialize(t_game *game, int argc, char **argv)
 	start_music();
 	sleep(2);
 	game->music.run_music = true;
+	game->isinited = 1;
 	return (0);
+}
+
+void	animate(t_game *g)
+{
+	int	i;
+
+	i = 0;
+	while (i < 3)
+	{
+		if (g->img.pl_l_i[i] != NULL)
+		{
+			if (g->direction == 'l' && g->isinited)
+			{
+				if (i == g->active_frame)
+				{
+					if (g->img.pl_l_i[i]->instances != NULL)
+					{
+						ft_printf("ja bei l %i\n", i);
+						g->img.pl_l_i[i]->instances[0].enabled = 1;
+					}
+				}
+				else
+				{
+					if (g->img.pl_l_i[i]->instances != NULL)
+						g->img.pl_l_i[i]->instances[0].enabled = 0;
+				}
+			}
+			else if (g->direction == 'r' && g->isinited)
+			{
+				if (i == g->active_frame)
+				{
+					if (g->img.pl_r_i[i]->instances != NULL)
+					{
+						ft_printf("ja bei r %i\n", i);
+						g->img.pl_r_i[i]->instances[0].enabled = 1;
+					}
+				}
+				else
+				{
+					if (g->img.pl_r_i[i]->instances != NULL)
+						g->img.pl_r_i[i]->instances[0].enabled = 0;
+				}
+			}
+		}
+		i++;
+	}
+}
+
+void	loop_hooky(void *param)
+{
+	t_game	*g;
+
+	g = (t_game *)param;
+	if (g->frame_count > 29)
+		g->frame_count = 0;
+	if (g->monster_move_count > 199)
+		g->monster_move_count = 0;
+	if ((g->frame_count % 10) == 0)
+	{
+		g->active_frame = g->frame_count / 10;
+		animate(g);
+	}
+	if ((g->monster_move_count % 20) == 0)
+	{
+		monster_action(g);
+	}
+	g->frame_count++;
+	g->monster_move_count++;
 }
 
 int	main(int argc, char **argv)
@@ -106,6 +180,7 @@ int	main(int argc, char **argv)
 		return (exit_code);
 	pthread_create(&game.bg_music_thrt, NULL, bg_music, &game.music);
 	mlx_key_hook(game.mlx, key_hook, &game);
+	mlx_loop_hook(game.mlx, loop_hooky, &game);
 	mlx_loop(game.mlx);
 	loose_exit(&game);
 	return (exit_code);

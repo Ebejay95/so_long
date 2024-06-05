@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 13:24:15 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/29 15:48:48 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/05 20:33:17 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ void	render_move(t_game *g)
 	nx = g->new_x;
 	ny = g->new_y;
 	if (g->direction == 'u')
-		mlx_image_to_window(g->mlx, g->img.plyr_u_i, nx * BLOCK, ny * BLOCK);
+		mlx_image_to_window(g->mlx, g->img.pl_u_i[0], nx * BLOCK, ny * BLOCK);
 	else if (g->direction == 'd')
-		mlx_image_to_window(g->mlx, g->img.plyr_d_i, nx * BLOCK, ny * BLOCK);
+		mlx_image_to_window(g->mlx, g->img.pl_d_i[0], nx * BLOCK, ny * BLOCK);
 	else if (g->direction == 'l')
-		mlx_image_to_window(g->mlx, g->img.plyr_l_i, nx * BLOCK, ny * BLOCK);
+		mlx_image_to_window(g->mlx, g->img.pl_l_i[0], nx * BLOCK, ny * BLOCK);
 	else if (g->direction == 'r')
-		mlx_image_to_window(g->mlx, g->img.plyr_r_i, nx * BLOCK, ny * BLOCK);
+		mlx_image_to_window(g->mlx, g->img.pl_r_i[0], nx * BLOCK, ny * BLOCK);
 	if (g->map_array[y][x] != 'E')
 		mlx_image_to_window(g->mlx, g->img.bg_i, x * BLOCK, y * BLOCK);
 	else
