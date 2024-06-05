@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/29 19:47:01 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/05 20:43:30 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,9 @@
 
 # ifndef BLOCK
 #  define BLOCK 40
+# endif
+# ifndef MONSTER_MAX
+#  define MONSTER_MAX 10
 # endif
 # ifndef BG
 #  define BG 0xFFFFFF
@@ -39,6 +42,13 @@ typedef struct s_point
 	int	y;
 }	t_point;
 
+typedef struct s_monster
+{
+	int		dire;
+	t_point	pos;
+	t_point	newpos;
+}	t_monster;
+
 typedef struct s_img
 {
 	mlx_texture_t	*bbg_t;
@@ -51,18 +61,16 @@ typedef struct s_img
 	mlx_image_t		*cllctbl_i;
 	mlx_texture_t	*exit_t;
 	mlx_image_t		*exit_i;
-	mlx_texture_t	*plyr_l_t1;
-	mlx_image_t		*plyr_l_i1;
-	mlx_texture_t	*plyr_l_t2;
-	mlx_image_t		*plyr_l_i2;
-	mlx_texture_t	*plyr_l_t3;
-	mlx_image_t		*plyr_l_i3;
-	mlx_texture_t	*plyr_r_t;
-	mlx_image_t		*plyr_r_i;
-	mlx_texture_t	*plyr_u_t;
-	mlx_image_t		*plyr_u_i;
-	mlx_texture_t	*plyr_d_t;
-	mlx_image_t		*plyr_d_i;
+	mlx_texture_t	*pl_l_t[3];
+	mlx_texture_t	*pl_r_t[3];
+	mlx_texture_t	*pl_u_t[3];
+	mlx_texture_t	*pl_d_t[3];
+	mlx_image_t		*pl_l_i[3];
+	mlx_image_t		*pl_r_i[3];
+	mlx_image_t		*pl_u_i[3];
+	mlx_image_t		*pl_d_i[3];
+	mlx_texture_t	*monster_t;
+	mlx_image_t		*monster_i;
 }	t_img;
 
 typedef struct s_game
@@ -73,6 +81,10 @@ typedef struct s_game
 	int				winwidth;
 	int				winheight;
 	int				c;
+	int				isinited;
+	int				frame_count;
+	int				active_frame;
+	int				monster_move_count;
 	char			*map;
 	char			**map_array;
 	t_point			size;
@@ -84,7 +96,6 @@ typedef struct s_game
 	mlx_image_t		*player_l_animation[3];
 	t_music			music;
 	int				frame_count_buffer;
-	int				frame_count;
 	pthread_t		bg_music_thrt;
 	pthread_t		sound_thread;
 	pthread_t		exit_sound_thread;
@@ -121,8 +132,8 @@ void	win_exit(t_game *game);
 void	loose_exit(t_game *game);
 char	move_player(t_game *g, mlx_key_data_t keydata);
 
-void	initialize_player_animation(t_game *game);
-void	render_move(t_game *g, int frame);
+void	monster_action(t_game *game);
+int		load_textures_monsters(t_game *game);
 void	play_sound(pthread_t thread, void *(*play)(void *));
 void	*player_move_sound(void *arg);
 void	*win_sound(void *arg);

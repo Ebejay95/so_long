@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 19:07:23 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/28 22:30:26 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/05 20:31:51 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,9 @@ int	validate_map_chars(char *map)
 		return (1);
 	}
 	count = count + ft_strcchr(map, '\n');
+	count = count + ft_strcchr(map, 'M');
+	if (ft_strcchr(map, 'M') > MONSTER_MAX)
+		return (ft_putstr_fd(2, "to many monsters\n"), 1);
 	count = count + ft_strcchr(map, '0');
 	count = count + ft_strcchr(map, '1');
 	if (count != ft_strlen(map))

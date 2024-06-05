@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 10:28:59 by jeberle           #+#    #+#             */
-/*   Updated: 2024/05/29 18:05:46 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/05 20:42:44 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void	move_processing(t_game *g)
 	x = g->player_pos.x;
 	y = g->player_pos.y;
 	play_sound(g->sound_thread, player_move_sound);
+	if (g->map_array[g->new_y][g->new_x] == 'M')
+		loose_exit(g);
 	if (g->map_array[g->new_y][g->new_x] == 'C')
 		play_sound(g->collect_sound_thread, collect_sound);
 	if (g->map_array[y][x] != 'E')
@@ -63,13 +65,9 @@ void	move_processing(t_game *g)
 	if (g->map_array[g->new_y][g->new_x] == 'E')
 	{
 		if (!ft_array_strchr(g->map_array, 'C'))
-		{
 			g->state = 1;
-		}
 		else
-		{
 			play_sound(g->exitny_sound_thread, exitny_sound);
-		}
 	}
 }
 
@@ -77,7 +75,7 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 {
 	t_game	*g;
 	char	moved_to;
-	ft_printf("key_hook\n");
+
 	g = (t_game *)param;
 	if (g->state == 1)
 		win_exit(g);

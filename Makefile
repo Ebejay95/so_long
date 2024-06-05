@@ -92,10 +92,12 @@ so_long.c \
 actions.c \
 map.c \
 player.c \
+monsters.c \
 sound.c \
 sound2.c \
 texture_items.c \
 texture_map.c \
+texture_monster.c \
 texture_player.c \
 texture.c \
 validation.c \
