@@ -6,7 +6,7 @@
 #    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/08 16:31:46 by jeberle           #+#    #+#              #
-#    Updated: 2024/06/07 16:35:37 by jeberle          ###   ########.fr        #
+#    Updated: 2024/06/07 19:46:48 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -88,38 +88,60 @@ MLXFTFLAGS=-L$(MLXFT_BUILD_DIR) -lmlx42 -lglfw
 #------------------------------------------------------------------------------#
 
 SRCS= \
-so_long.c \
-animation.c \
-initialize.c \
-initialize2.c \
-actions.c \
-map.c \
-player.c \
-monsters.c \
-monsters_helper.c \
-sound.c \
-sound2.c \
-sound3.c \
-termination.c \
-texture_items.c \
-texture_map.c \
-texture_monster.c \
-texture_player_up.c \
-texture_player_down.c \
-texture_player_left.c \
-texture_player_right.c \
-texture_player.c \
-texture_helper.c \
-texture.c \
-validation.c \
-validation_input.c \
-validation_content.c
+mandatory/so_long.c \
+mandatory/initialize.c \
+mandatory/initialize2.c \
+mandatory/actions.c \
+mandatory/map.c \
+mandatory/player.c \
+mandatory/termination.c \
+mandatory/texture_items.c \
+mandatory/texture_map.c \
+mandatory/texture_player_up.c \
+mandatory/texture_player_down.c \
+mandatory/texture_player_left.c \
+mandatory/texture_player_right.c \
+mandatory/texture_player.c \
+mandatory/texture_helper.c \
+mandatory/texture.c \
+mandatory/validation.c \
+mandatory/validation_input.c \
+mandatory/validation_content.c
+
+BONUS_SRCS= \
+bonus/so_long_bonus.c \
+bonus/animation_bonus.c \
+bonus/initialize_bonus.c \
+bonus/initialize2_bonus.c \
+bonus/actions_bonus.c \
+bonus/map_bonus.c \
+bonus/player_bonus.c \
+bonus/monsters_bonus.c \
+bonus/monsters_helper_bonus.c \
+bonus/sound_bonus.c \
+bonus/sound2_bonus.c \
+bonus/sound3_bonus.c \
+bonus/termination_bonus.c \
+bonus/texture_items_bonus.c \
+bonus/texture_map_bonus.c \
+bonus/texture_monster_bonus.c \
+bonus/texture_player_up_bonus.c \
+bonus/texture_player_down_bonus.c \
+bonus/texture_player_left_bonus.c \
+bonus/texture_player_right_bonus.c \
+bonus/texture_player_bonus.c \
+bonus/texture_helper_bonus.c \
+bonus/texture_bonus.c \
+bonus/validation_bonus.c \
+bonus/validation_input_bonus.c \
+bonus/validation_content_bonus.c
 
 #------------------------------------------------------------------------------#
 #--------------                      OBJECTS                      -------------#
 #------------------------------------------------------------------------------#
 
 OBJECTS := $(addprefix $(OBJ_DIR)/, $(SRCS:%.c=%.o))
+BONUS_OBJECTS := $(addprefix $(OBJ_DIR)/, $(BONUS_SRCS:%.c=%.o))
 
 #------------------------------------------------------------------------------#
 #--------------                      COMPILE                      -------------#
@@ -129,7 +151,11 @@ OBJECTS := $(addprefix $(OBJ_DIR)/, $(SRCS:%.c=%.o))
 
 all: $(MLXFT_LIB) $(LIBFT_LIB) $(NAME)
 
+bonus: $(MLXFT_LIB) $(LIBFT_LIB) $(BONUS_OBJECTS)
+	@$(MAKE) $(NAME) "OBJECTS=$(BONUS_OBJECTS)"
+
 -include $(OBJECTS:.o=.d)
+-include $(BONUS_OBJECTS:.o=.d)
 
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(@D)

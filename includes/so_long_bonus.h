@@ -1,31 +1,50 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   so_long.h                                          :+:      :+:    :+:   */
+/*   so_long_bonus.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/08 16:35:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/07 19:46:19 by jeberle          ###   ########.fr       */
+/*   Created: 2024/06/07 17:04:36 by jeberle           #+#    #+#             */
+/*   Updated: 2024/06/07 18:53:36 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SO_LONG_H
-# define SO_LONG_H
+#ifndef SO_LONG_BONUS_H
+# define SO_LONG_BONUS_H
 
+# include <pthread.h>
 # include <fcntl.h>
+# include <signal.h>
 # include "./../mlx42/include/MLX42/MLX42.h"
 # include "./../libft/libft.h"
 
 # ifndef BLOCK
 #  define BLOCK 50
 # endif
+# ifndef MONSTER_MAX
+#  define MONSTER_MAX 10
+# endif
+
+typedef struct s_music
+{
+	int		run_music;
+	int		bg_sec;
+	pid_t	music_pid;
+}	t_music;
 
 typedef struct s_point
 {
 	int	x;
 	int	y;
 }	t_point;
+
+typedef struct s_monster
+{
+	int		dire;
+	t_point	p;
+	t_point	np;
+}	t_monster;
 
 typedef struct s_game
 {
@@ -46,7 +65,15 @@ typedef struct s_game
 	int				new_x;
 	int				new_y;
 	char			direction;
+	t_music			music;
 	int				frame_count_buffer;
+	pthread_t		bg_music_thrt;
+	pthread_t		sound_thread;
+	pthread_t		exit_sound_thread;
+	pthread_t		exitny_sound_thread;
+	pthread_t		collect_sound_thread;
+	pthread_t		win_sound_thread;
+	pthread_t		loose_sound_thread;
 	mlx_image_t		*score;
 	mlx_texture_t	*bbg_t;
 	mlx_image_t		*bbg_i;
@@ -58,14 +85,14 @@ typedef struct s_game
 	mlx_image_t		*cllctbl_i;
 	mlx_texture_t	*exit_t;
 	mlx_image_t		*ex_i;
-	mlx_texture_t	*pl_l_t;
-	mlx_texture_t	*pl_r_t;
-	mlx_texture_t	*pl_u_t;
-	mlx_texture_t	*pl_d_t;
-	mlx_image_t		*pl_l_i;
-	mlx_image_t		*pl_r_i;
-	mlx_image_t		*pl_u_i;
-	mlx_image_t		*pl_d_i;
+	mlx_texture_t	*pl_l_t[3];
+	mlx_texture_t	*pl_r_t[3];
+	mlx_texture_t	*pl_u_t[3];
+	mlx_texture_t	*pl_d_t[3];
+	mlx_image_t		*pl_l_i[3];
+	mlx_image_t		*pl_r_i[3];
+	mlx_image_t		*pl_u_i[3];
+	mlx_image_t		*pl_d_i[3];
 	mlx_texture_t	*monster_t;
 	mlx_image_t		*m_i;
 }	t_game;
@@ -101,10 +128,23 @@ void	initial_map_paint(t_game *game);
 void	terminate_mlx(t_game *game);
 void	animate(t_game *g);
 void	load_player_frames(t_game *game, int x, int y);
-void	load_pl_left(t_game *g, int x, int y);
-void	load_pl_right(t_game *g, int x, int y);
-void	load_pl_up(t_game *g, int x, int y);
-void	load_pl_down(t_game *g, int x, int y);
+void	monster_action(t_game *game);
+int		load_textures_monsters(t_game *game);
+void	play_sound(pthread_t thread, void *(*play)(void *));
+void	*player_move_sound(void *arg);
+void	*win_sound(void *arg);
+void	*loose_sound(void *arg);
+void	*exit_sound(void *arg);
+void	*exitny_sound(void *arg);
+void	*collect_sound(void *arg);
+void	*start_music(void);
+void	*bg_music(void *arg);
+int		can_move(char c);
+int		monster_stuck(char n[4]);
+void	load_pl_left(t_game *g, int x, int y, int i);
+void	load_pl_right(t_game *g, int x, int y, int i);
+void	load_pl_up(t_game *g, int x, int y, int i);
+void	load_pl_down(t_game *g, int x, int y, int i);
 int		load_texture_player_left(t_game *g);
 int		load_texture_player_right(t_game *g);
 int		load_texture_player_up(t_game *g);
