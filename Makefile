@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+           #
+#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/08 16:31:46 by jeberle           #+#    #+#              #
-#    Updated: 2024/05/18 15:33:44 by jonathanebe      ###   ########.fr        #
+#    Updated: 2024/06/07 16:28:25 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,7 +81,7 @@ MLXFT=libmlx42.a
 MLXFT_BUILD_FLAGS=-B
 MLXFT_BUILD_DIR=./mlx_build
 MLXFT_LIB=$(MLXFT_BUILD_DIR)/$(MLXFT)
-MLXFTFLAGS=-L$(MLXFT_BUILD_DIR) -lmlx42 -L$(GLFW_LIB_PATH) -I$(GLFW_INCLUDE_PATH) -lglfw -pthread -lm -framework Cocoa -framework OpenGL -framework IOKit
+MLXFTFLAGS=-L$(MLXFT_BUILD_DIR) -lmlx42 -lglfw
 
 #------------------------------------------------------------------------------#
 #--------------                        SRC                        -------------#
@@ -89,16 +89,27 @@ MLXFTFLAGS=-L$(MLXFT_BUILD_DIR) -lmlx42 -L$(GLFW_LIB_PATH) -I$(GLFW_INCLUDE_PATH
 
 SRCS= \
 so_long.c \
+animation.c \
+initialize.c \
+initialize2.c \
 actions.c \
 map.c \
 player.c \
 monsters.c \
+monsters_helper.c \
 sound.c \
 sound2.c \
+sound3.c \
+termination.c \
 texture_items.c \
 texture_map.c \
 texture_monster.c \
+texture_player_up.c \
+texture_player_down.c \
+texture_player_left.c \
+texture_player_right.c \
 texture_player.c \
+texture_helper.c \
 texture.c \
 validation.c \
 validation_input.c \

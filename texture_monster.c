@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:25:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/05 15:31:40 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/07 15:26:58 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,18 @@
 
 int	load_texture_monster(t_game *game)
 {
-	game->img.monster_t = mlx_load_png("assets/monster.png");
-	if (!game->img.monster_t)
+	game->monster_t = mlx_load_png("assets/monster.png");
+	if (!game->monster_t)
 	{
 		ft_putstr_fd(2, "Error loading monster.png\n");
-		mlx_close_window(game->mlx);
+		terminate_mlx(game);
 		return (EXIT_FAILURE);
 	}
-	game->img.monster_i = mlx_texture_to_image(game->mlx, game->img.monster_t);
-	if (!game->img.monster_i)
+	game->m_i = mlx_texture_to_image(game->mlx, game->monster_t);
+	if (!game->m_i)
 	{
 		ft_putstr_fd(2, "Error creating image from texture\n");
-		mlx_close_window(game->mlx);
+		terminate_mlx(game);
 		return (EXIT_FAILURE);
 	}
 	return (0);
@@ -41,7 +41,7 @@ int	load_textures_monsters(t_game *game)
 		return (exit_code);
 	else
 	{
-		mlx_resize_image(game->img.monster_i, BLOCK, BLOCK);
+		mlx_resize_image(game->m_i, BLOCK, BLOCK);
 	}
 	return (0);
 }

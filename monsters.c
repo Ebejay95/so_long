@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/05 15:48:15 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/05 20:37:49 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/07 14:39:30 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,35 +14,23 @@
 
 void	m_render_move(t_game *g, t_monster monsters[MONSTER_MAX], int m_count)
 {
-	int	m_dex;
+	int			m_dex;
+	t_monster	m;
 
 	m_dex = 0;
 	while (m_count > m_dex)
 	{
-		mlx_image_to_window(g->mlx, g->img.monster_i, monsters[m_dex].newpos.x * BLOCK, monsters[m_dex].newpos.y * BLOCK);
-		if (g->map_array[monsters[m_dex].pos.y][monsters[m_dex].pos.x] != 'E')
-			mlx_image_to_window(g->mlx, g->img.bg_i, monsters[m_dex].pos.x * BLOCK, monsters[m_dex].pos.y * BLOCK);
+		m = monsters[m_dex];
+		mlx_image_to_window(g->mlx, g->m_i, m.np.x * BLOCK, m.np.y * BLOCK);
+		if (g->map_array[m.p.y][m.p.x] != 'E')
+			mlx_image_to_window(g->mlx, g->bg_i, m.p.x * BLOCK, m.p.y * BLOCK);
 		else
 		{
-			mlx_image_to_window(g->mlx, g->img.bg_i, monsters[m_dex].pos.x * BLOCK, monsters[m_dex].pos.y * BLOCK);
-			mlx_image_to_window(g->mlx, g->img.exit_i, monsters[m_dex].pos.x * BLOCK, monsters[m_dex].pos.y * BLOCK);
+			mlx_image_to_window(g->mlx, g->bg_i, m.p.x * BLOCK, m.p.y * BLOCK);
+			mlx_image_to_window(g->mlx, g->ex_i, m.p.x * BLOCK, m.p.y * BLOCK);
 		}
 		m_dex++;
 	}
-}
-
-int	can_move(char c)
-{
-	if (c == '0' || c == 'P')
-		return (1);
-	return (0);
-}
-
-int	monster_stuck(char n[4])
-{
-	if (can_move(n[0]) || can_move(n[1]) || can_move(n[2]) || can_move(n[3]))
-		return (1);
-	return (0);
 }
 
 int	get_move(t_game *g, int x, int y)
@@ -70,27 +58,29 @@ int	get_move(t_game *g, int x, int y)
 
 void	monsters_move(t_game *g, t_monster monsters[MONSTER_MAX], int m_count)
 {
-	int	m_dex;
+	int			m_dex;
+	t_monster	*m;
 
 	m_dex = 0;
 	while (m_count > m_dex)
 	{
-		monsters[m_dex].dire = get_move(g, monsters[m_dex].pos.x, monsters[m_dex].pos.y);
-		monsters[m_dex].newpos.x = monsters[m_dex].pos.x;
-		monsters[m_dex].newpos.y = monsters[m_dex].pos.y;
-		if (monsters[m_dex].dire == 0)
-			monsters[m_dex].newpos.y = monsters[m_dex].pos.y - 1;
-		else if (monsters[m_dex].dire == 1)
-			monsters[m_dex].newpos.x = monsters[m_dex].pos.x - 1;
-		else if (monsters[m_dex].dire == 2)
-			monsters[m_dex].newpos.y = monsters[m_dex].pos.y + 1;
-		else if (monsters[m_dex].dire == 3)
-			monsters[m_dex].newpos.x = monsters[m_dex].pos.x + 1;
-		if (g->map_array[monsters[m_dex].newpos.y][monsters[m_dex].newpos.x] == 'P')
+		m = &monsters[m_dex];
+		m->dire = get_move(g, m->p.x, m->p.y);
+		m->np.x = m->p.x;
+		m->np.y = m->p.y;
+		if (m->dire == 0)
+			m->np.y = m->p.y - 1;
+		else if (m->dire == 1)
+			m->np.x = m->p.x - 1;
+		else if (m->dire == 2)
+			m->np.y = m->p.y + 1;
+		else if (m->dire == 3)
+			m->np.x = m->p.x + 1;
+		if (m->np.x == g->player_pos.x && m->np.y == g->player_pos.y)
 			loose_exit(g);
-		g->map_array[monsters[m_dex].newpos.y][monsters[m_dex].newpos.x] = 'M';
-		if (monsters[m_dex].pos.y != monsters[m_dex].newpos.y || monsters[m_dex].pos.x != monsters[m_dex].newpos.x)
-			g->map_array[monsters[m_dex].pos.y][monsters[m_dex].pos.x] = '0';
+		g->map_array[m->np.y][m->np.x] = 'M';
+		if (m->p.y != m->np.y || m->p.x != m->np.x)
+			g->map_array[m->p.y][m->p.x] = '0';
 		m_dex++;
 	}
 }
@@ -98,31 +88,27 @@ void	monsters_move(t_game *g, t_monster monsters[MONSTER_MAX], int m_count)
 void	monster_action(t_game *g)
 {
 	t_monster	monsters[MONSTER_MAX];
-	int			length;
 	int			y;
 	int			x;
-	int			m_count;
 	int			m_dex;
 
 	m_dex = 0;
 	y = 0;
-	m_count = ft_array_strcchr(g->map_array, 'M');
-	length = ft_array_length(g->map_array);
-	while (length > y)
+	while (ft_array_length(g->map_array) > y)
 	{
 		x = 0;
 		while (g->map_array[y][x] != '\0')
 		{
 			if (g->map_array[y][x] == 'M')
 			{
-				monsters[m_dex].pos.x = x;
-				monsters[m_dex].pos.y = y;
+				monsters[m_dex].p.x = x;
+				monsters[m_dex].p.y = y;
 				m_dex++;
 			}
 			x++;
 		}
 		y++;
 	}
-	monsters_move(g, monsters, m_count);
-	m_render_move(g, monsters, m_count);
+	monsters_move(g, monsters, ft_array_strcchr(g->map_array, 'M'));
+	m_render_move(g, monsters, ft_array_strcchr(g->map_array, 'M'));
 }

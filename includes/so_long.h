@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/05 20:43:30 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/07 16:07:32 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include "./../libft/libft.h"
 
 # ifndef BLOCK
-#  define BLOCK 40
+#  define BLOCK 60
 # endif
 # ifndef MONSTER_MAX
 #  define MONSTER_MAX 10
@@ -45,38 +45,13 @@ typedef struct s_point
 typedef struct s_monster
 {
 	int		dire;
-	t_point	pos;
-	t_point	newpos;
+	t_point	p;
+	t_point	np;
 }	t_monster;
-
-typedef struct s_img
-{
-	mlx_texture_t	*bbg_t;
-	mlx_image_t		*bbg_i;
-	mlx_texture_t	*bg_t;
-	mlx_image_t		*bg_i;
-	mlx_texture_t	*wall_t;
-	mlx_image_t		*wall_i;
-	mlx_texture_t	*cllctbl_t;
-	mlx_image_t		*cllctbl_i;
-	mlx_texture_t	*exit_t;
-	mlx_image_t		*exit_i;
-	mlx_texture_t	*pl_l_t[3];
-	mlx_texture_t	*pl_r_t[3];
-	mlx_texture_t	*pl_u_t[3];
-	mlx_texture_t	*pl_d_t[3];
-	mlx_image_t		*pl_l_i[3];
-	mlx_image_t		*pl_r_i[3];
-	mlx_image_t		*pl_u_i[3];
-	mlx_image_t		*pl_d_i[3];
-	mlx_texture_t	*monster_t;
-	mlx_image_t		*monster_i;
-}	t_img;
 
 typedef struct s_game
 {
 	mlx_t			*mlx;
-	mlx_image_t		*score;
 	int				state;
 	int				winwidth;
 	int				winheight;
@@ -89,11 +64,9 @@ typedef struct s_game
 	char			**map_array;
 	t_point			size;
 	t_point			player_pos;
-	t_img			img;
 	int				new_x;
 	int				new_y;
 	char			direction;
-	mlx_image_t		*player_l_animation[3];
 	t_music			music;
 	int				frame_count_buffer;
 	pthread_t		bg_music_thrt;
@@ -103,6 +76,27 @@ typedef struct s_game
 	pthread_t		collect_sound_thread;
 	pthread_t		win_sound_thread;
 	pthread_t		loose_sound_thread;
+	mlx_image_t		*score;
+	mlx_texture_t	*bbg_t;
+	mlx_image_t		*bbg_i;
+	mlx_texture_t	*bg_t;
+	mlx_image_t		*bg_i;
+	mlx_texture_t	*wall_t;
+	mlx_image_t		*wall_i;
+	mlx_texture_t	*cllctbl_t;
+	mlx_image_t		*cllctbl_i;
+	mlx_texture_t	*exit_t;
+	mlx_image_t		*ex_i;
+	mlx_texture_t	*pl_l_t[3];
+	mlx_texture_t	*pl_r_t[3];
+	mlx_texture_t	*pl_u_t[3];
+	mlx_texture_t	*pl_d_t[3];
+	mlx_image_t		*pl_l_i[3];
+	mlx_image_t		*pl_r_i[3];
+	mlx_image_t		*pl_u_i[3];
+	mlx_image_t		*pl_d_i[3];
+	mlx_texture_t	*monster_t;
+	mlx_image_t		*m_i;
 }	t_game;
 
 int		check_top_bottom(char *line);
@@ -131,7 +125,11 @@ void	key_hook(mlx_key_data_t keydata, void *param);
 void	win_exit(t_game *game);
 void	loose_exit(t_game *game);
 char	move_player(t_game *g, mlx_key_data_t keydata);
-
+int		initialize(t_game *game, int argc, char **argv);
+void	initial_map_paint(t_game *game);
+void	terminate_mlx(t_game *game);
+void	animate(t_game *g);
+void	load_player_frames(t_game *game, int x, int y);
 void	monster_action(t_game *game);
 int		load_textures_monsters(t_game *game);
 void	play_sound(pthread_t thread, void *(*play)(void *));
@@ -143,4 +141,20 @@ void	*exitny_sound(void *arg);
 void	*collect_sound(void *arg);
 void	*start_music(void);
 void	*bg_music(void *arg);
+int		can_move(char c);
+int		monster_stuck(char n[4]);
+void	load_pl_left(t_game *g, int x, int y, int i);
+void	load_pl_right(t_game *g, int x, int y, int i);
+void	load_pl_up(t_game *g, int x, int y, int i);
+void	load_pl_down(t_game *g, int x, int y, int i);
+void	animate(t_game *g);
+int		load_texture_player_left(t_game *g);
+int		load_texture_player_right(t_game *g);
+int		load_texture_player_up(t_game *g);
+int		load_texture_player_down(t_game *g);
+int		load_image_player_left(t_game *g);
+int		load_image_player_right(t_game *g);
+int		load_image_player_up(t_game *g);
+int		load_image_player_down(t_game *g);
+void	fill_mlx_pl(t_game *game);
 #endif

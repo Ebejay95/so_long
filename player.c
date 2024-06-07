@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/20 13:24:15 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/05 20:46:21 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/07 13:01:31 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,28 +37,23 @@ void	render_move(t_game *g)
 {
 	int	nx;
 	int	ny;
-	int	y;
 	int	x;
+	int	y;
 
-	y = g->player_pos.y;
-	x = g->player_pos.x;
 	nx = g->new_x;
 	ny = g->new_y;
-	if (g->direction == 'u')
-		mlx_image_to_window(g->mlx, g->img.pl_u_i[0], nx * BLOCK, ny * BLOCK);
-	else if (g->direction == 'd')
-		mlx_image_to_window(g->mlx, g->img.pl_d_i[0], nx * BLOCK, ny * BLOCK);
-	else if (g->direction == 'l')
-		mlx_image_to_window(g->mlx, g->img.pl_l_i[0], nx * BLOCK, ny * BLOCK);
-	else if (g->direction == 'r')
-		mlx_image_to_window(g->mlx, g->img.pl_r_i[0], nx * BLOCK, ny * BLOCK);
+	x = g->player_pos.x;
+	y = g->player_pos.y;
+	load_player_frames(g, g->new_x, g->new_y);
 	if (g->map_array[y][x] != 'E')
-		mlx_image_to_window(g->mlx, g->img.bg_i, x * BLOCK, y * BLOCK);
+		mlx_image_to_window(g->mlx, g->bg_i, x * BLOCK, y * BLOCK);
 	else
 	{
-		mlx_image_to_window(g->mlx, g->img.bg_i, x * BLOCK, y * BLOCK);
-		mlx_image_to_window(g->mlx, g->img.exit_i, x * BLOCK, y * BLOCK);
+		mlx_image_to_window(g->mlx, g->bg_i, x * BLOCK, y * BLOCK);
+		mlx_image_to_window(g->mlx, g->ex_i, x * BLOCK, y * BLOCK);
 	}
+	g->player_pos.x = nx;
+	g->player_pos.y = ny;
 }
 
 char	move_player(t_game *g, mlx_key_data_t keydata)
