@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 23:00:48 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/07 19:36:37 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/07 20:08:29 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,12 @@ int	load_textures_map(t_game *game)
 	int	exit_code;
 
 	exit_code = 0;
-	exit_code = load_texture_map_bg(game);
-	exit_code = load_texture_map_bbg(game);
-	exit_code = load_texture_map_wall(game);
+	if (exit_code == 0)
+		exit_code = load_texture_map_bg(game);
+	if (exit_code == 0)
+		exit_code = load_texture_map_bbg(game);
+	if (exit_code == 0)
+		exit_code = load_texture_map_wall(game);
 	if (exit_code > 0)
 		return (exit_code);
 	else

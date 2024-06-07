@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/28 23:02:29 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/07 17:04:07 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/07 20:10:01 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,10 @@ int	load_textures_items(t_game *game)
 	int	exit_code;
 
 	exit_code = 0;
-	exit_code = load_texture_item_collectable(game);
-	exit_code = load_texture_item_exit(game);
+	if (exit_code == 0)
+		exit_code = load_texture_item_collectable(game);
+	if (exit_code == 0)
+		exit_code = load_texture_item_exit(game);
 	if (exit_code > 0)
 		return (exit_code);
 	else
