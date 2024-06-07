@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/29 10:28:59 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/07 19:44:31 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/07 20:02:32 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,5 +81,6 @@ void	key_hook(mlx_key_data_t keydata, void *param)
 	{
 		move_processing(g);
 		g->c++;
+		ft_printf("%i\n", g->c);
 	}
 }
