@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   so_long.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:01 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/07 16:15:30 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/07 14:41:50 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	initial_map_paint(t_game *game)
 	}
 }
 
-void	loop_hooky(void *param)
+void	loop_hook(void *param)
 {
 	t_game	*g;
 
@@ -103,7 +103,7 @@ int	main(int argc, char **argv)
 		return (exit_code);
 	pthread_create(&game.bg_music_thrt, NULL, bg_music, &game.music);
 	mlx_key_hook(game.mlx, key_hook, &game);
-	mlx_loop_hook(game.mlx, loop_hooky, &game);
+	mlx_loop_hook(game.mlx, loop_hook, &game);
 	mlx_loop(game.mlx);
 	loose_exit(&game);
 	return (exit_code);
