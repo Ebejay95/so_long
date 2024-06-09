@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/19 19:07:23 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/07 19:16:37 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/09 16:46:15 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,8 @@ int	validate_map_rect(char *map)
 			ft_putstr_fd(2, "map is not a rect\n");
 			return (ft_array_l_free(maplines, linecount), 1);
 		}
+		if (ft_strlen(maplines[i]) > 23 || linecount > 23)
+			return (map_size_free(maplines, linecount));
 		i++;
 	}
 	return (ft_array_l_free(maplines, linecount), 0);
@@ -116,4 +118,11 @@ int	validate_map_walls(char *map)
 	}
 	ft_array_l_free(maplines, linecount);
 	return (0);
+}
+
+int	map_size_free(char **maplines, size_t linecount)
+{
+	ft_putstr_fd(2, "map is to big\n");
+	ft_array_l_free(maplines, linecount);
+	return (1);
 }

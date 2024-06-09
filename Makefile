@@ -6,7 +6,7 @@
 #    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/08 16:31:46 by jeberle           #+#    #+#              #
-#    Updated: 2024/06/07 19:46:48 by jeberle          ###   ########.fr        #
+#    Updated: 2024/06/09 16:33:17 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,6 +39,7 @@ $(GREEN)████████████████████████
 #------------------------------------------------------------------------------#
 
 NAME=so_long
+NAME_BONUS=so_long_bonus
 
 #------------------------------------------------------------------------------#
 #--------------                       FLAGS                       -------------#
@@ -151,8 +152,7 @@ BONUS_OBJECTS := $(addprefix $(OBJ_DIR)/, $(BONUS_SRCS:%.c=%.o))
 
 all: $(MLXFT_LIB) $(LIBFT_LIB) $(NAME)
 
-bonus: $(MLXFT_LIB) $(LIBFT_LIB) $(BONUS_OBJECTS)
-	@$(MAKE) $(NAME) "OBJECTS=$(BONUS_OBJECTS)"
+bonus:  $(MLXFT_LIB) $(LIBFT_LIB) $(NAME_BONUS)
 
 -include $(OBJECTS:.o=.d)
 -include $(BONUS_OBJECTS:.o=.d)
@@ -176,6 +176,10 @@ $(NAME): $(OBJECTS)
 	@$(CC) -o $@ $^ $(LIBFTFLAGS) $(MLXFTFLAGS)
 	@echo "$(SUCCESS)"
 
+$(NAME_BONUS): $(BONUS_OBJECTS)
+	@$(CC) -o $@ $^ $(LIBFTFLAGS) $(MLXFTFLAGS)
+	@echo "$(SUCCESS)"
+
 clean:
 	@rm -rf mlx42
 	@rm -rf $(OBJ_DIR)
@@ -184,6 +188,7 @@ clean:
 	@echo "$(RED)objects deleted$(X)"
 
 fclean: clean
+	@rm -rf $(NAME_BONUS)
 	@rm -rf $(NAME)
 	@$(MAKE) -C $(LIBFT_DIR) fclean
 	@echo "$(RED)so_long deleted$(X)"

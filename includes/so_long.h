@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/05/08 16:35:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/07 19:46:19 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/09 16:44:14 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,4 +116,5 @@ int		load_image_player_down(t_game *g);
 void	fill_mlx_pl(t_game *game);
 void	wall_val_free(char **maplines, size_t linecount);
 void	mcontent_free(char *vm, char *vmt, char **vmap, size_t linecount);
+int		map_size_free(char **maplines, size_t linecount);
 #endif
