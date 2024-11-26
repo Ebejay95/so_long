@@ -2,7 +2,7 @@
 
 # so_long
 
-**A simple 2D game developed in C using the MinilibX library.**
+**A simple 2D game developed in C using the mlx42 library.**
 
 This project involves creating a basic 2D game where the player navigates through a maze, collects items, and reaches the exit while avoiding enemies. It demonstrates proficiency in game development concepts, graphics handling, and event-driven programming.
 
